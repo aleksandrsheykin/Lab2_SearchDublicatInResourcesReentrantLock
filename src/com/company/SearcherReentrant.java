@@ -47,7 +47,8 @@ public class SearcherReentrant extends Thread {
                         return;
                     }
                 } finally {
-                    Main.wordSetObject.locker.unlock();
+                    if (Main.wordSetObject.locker.isLocked())
+                        Main.wordSetObject.locker.unlock();
                 }
             }
 

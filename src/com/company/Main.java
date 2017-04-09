@@ -5,7 +5,7 @@ public class Main {
     public static Finisher finisher;
 
     public static void main(String[] args) {
-        String resources[] = new String[]{"1.txt", "2.txt", "3.txt"};
+        String resources[] = new String[]{"1.txt", "2.txt", "3.txt", "4.txt", "5.txt", "6.txt", "7.txt", "8.txt", "9.txt"};
         finisher = new Finisher(resources.length);
 
         if (1==2) {
@@ -19,6 +19,5 @@ public class Main {
                 finisher.addThread(i);
             }
         }
-
     }
 }
