@@ -5,12 +5,19 @@ public class Main {
     public static Finisher finisher;
 
     public static void main(String[] args) {
-        String resources[] = new String[] {"1.txt", "2.txt", "3.txt"};
+        String resources[] = new String[]{"1.txt", "2.txt", "3.txt"};
         finisher = new Finisher(resources.length);
 
-        for (int i=0; i<resources.length; i++) {
-            new Searcher(resources[i], i);
-            finisher.addThread(i);
+        if (1==2) {
+            for (int i = 0; i < resources.length; i++) {
+                new Searcher(resources[i], i);
+                finisher.addThread(i);
+            }
+        } else {
+            for (int i = 0; i < resources.length; i++) {
+                new SearcherReentrant(resources[i], i);
+                finisher.addThread(i);
+            }
         }
 
     }
