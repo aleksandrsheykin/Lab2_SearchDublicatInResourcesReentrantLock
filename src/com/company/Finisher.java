@@ -27,8 +27,7 @@ public class Finisher extends Thread  {
             }
         }
         finishTime = System.nanoTime();
-        System.out.printf("Finish! time = ");
-        System.out.println(finishTime-startTime);
+        System.out.println("Finish! time = "+(finishTime-startTime));
     }
 
     public void addThread(Integer threadInd) {
@@ -38,7 +37,6 @@ public class Finisher extends Thread  {
     public void finish(Integer threadInd){
         threadsIsFinish[threadInd].set(true);
         //Thread.yield();
-        //notify();
     }
 
 }

@@ -2,6 +2,7 @@ package com.company;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -9,12 +10,16 @@ import java.util.regex.Pattern;
  * Created by admin on 10.04.2017.
  */
 public class SearcherReentrant extends Thread {
-    String res;
-    Integer threadInd;
+    private String res;
+    private Integer threadInd;
+    private WordSet wordSetObject;
+    private Finisher finisher;
 
-    public SearcherReentrant(String res, Integer threadInd) {
+    public SearcherReentrant(String res, Integer threadInd, WordSet wordSetObject, Finisher finisher) {
         this.threadInd = threadInd;
         this.res = res;
+        this.wordSetObject = wordSetObject;
+        this.finisher = finisher;
         Thread t = new Thread(this);
         t.start();
     }
@@ -34,27 +39,33 @@ public class SearcherReentrant extends Thread {
                 }
                 word = word.replaceAll("[^а-яА-Я]+", "");
 
-                Main.wordSetObject.locker.lock();
+                wordSetObject.locker.lock();
                 try {
-                    if (Main.wordSetObject.flStop.get()) {
+                    if (wordSetObject.flStop.get()) {
                         return;
                     }
-                    if (!Main.wordSetObject.wordSet.add(word)) {
+                    if (!wordSetObject.wordSet.add(word)) {
                         System.out.println("word '" + word + "' repeated in file " + res);
-                        Main.wordSetObject.flStop.set(true);
-                        Main.finisher.finish(this.threadInd);
-                        Main.wordSetObject.locker.unlock();
+                        wordSetObject.flStop.set(true);
+                        finisher.finish(this.threadInd);
+                        wordSetObject.locker.unlock();
                         return;
                     }
                 } finally {
-                    if (Main.wordSetObject.locker.isLocked())
-                        Main.wordSetObject.locker.unlock();
+                    if (wordSetObject.locker.isLocked())
+                        wordSetObject.locker.unlock();
                 }
             }
 
         } catch (FileNotFoundException e) {
             System.out.println("file '"+res+"' not found");
             e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            System.out.println("'"+res+"' is not file");
+        } catch (SecurityException e) {
+            System.out.println("file '"+res+"' is not available");
+        } catch (IOException e) {
+            System.out.println("file is not reading '"+res+"'");
         }
     }
 
